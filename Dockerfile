@@ -1,36 +1,21 @@
-# Stage 1: Build the application using a Node.js 20.x builder image
-FROM node:20-alpine AS builder
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json
+FROM node:lts-alpine3.19
+ 
+# Create and set the working directory inside the container
+WORKDIR /app
+ 
+# Copy package.json and package-lock.json files
 COPY package*.json ./
-
-# Install production dependencies only
-RUN npm install -g @nestjs/cli
-RUN npm install --omit=dev
-
-# Copy the rest of the application code
+ 
+# Install dependencies
+RUN npm install
+ 
+# Copy the rest of the application code to the working directory
 COPY . .
-
-# Build the application (e.g., compile TypeScript)
+ 
+# Build the application
 RUN npm run build
-
-# Stage 2: Create a lightweight production image using distroless
-FROM gcr.io/distroless/nodejs20-debian11 AS production
-
-# Set the working directory in the final image
-WORKDIR /usr/src/app
-
-# Copy the production node_modules from the builder stage
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-
-# Copy the built application code from the builder stage
-COPY --from=builder /usr/src/app/dist ./dist
-
-# Expose the application port
-EXPOSE 3000
-
-# Run the application using distroless image
-CMD ["dist/main.js"]
+ 
+# Expose port and start application
+EXPOSE 4000
+ 
+CMD [ "node", "dist/main.js" ]
