@@ -3,14 +3,14 @@ name: Deploy to Amazon ECS
 on:
   push:
     branches:
-      - CICD
+      - master
 
 env:
   AWS_REGION: us-west-2
-  ECR_REPOSITORY: label-gaurd-ecr
-  ECS_SERVICE: user-microservice
-  ECS_CLUSTER: label-gaurd-cluster
-  ECS_TASK_DEFINITION: .aws/label-gaurd-user-microservice-td.json
+  ECR_REPOSITORY: nestify-ecr
+  ECS_SERVICE: tps-microservice
+  ECS_CLUSTER: nestify-ecs-cluster
+  ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
   CONTAINER_NAME: user-container
 
 jobs:
