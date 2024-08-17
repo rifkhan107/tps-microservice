@@ -8,10 +8,10 @@ on:
 env:
   AWS_REGION: us-west-2
   ECR_REPOSITORY: nestify-ecr
-  ECS_SERVICE: tps-microservice
+  ECS_SERVICE: tps-microservice-svc
   ECS_CLUSTER: nestify-ecs-cluster
   ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
-  CONTAINER_NAME: user-container
+  CONTAINER_NAME: tps-container
 
 jobs:
   deploy:
