@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install production dependencies only
+RUN npm install -g @nestjs/cli
 RUN npm install --omit=dev
 
 # Copy the rest of the application code
