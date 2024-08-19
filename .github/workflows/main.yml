@@ -18,6 +18,7 @@ jobs:
   setup:
     name: Setup Environment
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
       - name: Checkout Source Code
@@ -33,9 +34,13 @@ jobs:
   generate-config:
     name: Generate Config
     runs-on: ubuntu-latest
+    environment: dev
     needs: setup
 
     steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
       - name: Generate config.js with API URL
         run: |
           # Replace the placeholder with the environment variable value
@@ -46,9 +51,13 @@ jobs:
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    environment: dev
     needs: generate-config
 
     steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
@@ -66,9 +75,13 @@ jobs:
   deploy:
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
+    environment: dev
     needs: build-and-push
 
     steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
