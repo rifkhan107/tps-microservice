@@ -1,6 +1,8 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 // Controllers
 import { AppleController } from './app.controller';
@@ -16,6 +18,9 @@ import { LoggingMiddleware } from './middleware/logging.middleware';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Serve static files from the 'public' directory
+    }),
     ConfigModule.forRoot({
       isGlobal: true, // Makes the configuration globally available
     }),
