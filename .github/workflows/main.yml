@@ -34,6 +34,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
+      - name: Generate config.js with API URL
+        run: |
+          # Replace the placeholder with the environment variable value
+          sed "s|%%API_URL%%|$API_URL|g" public/config.template.js > public/config.js
+          echo "config.js has been generated successfully with the following content:"
+          cat public/config.js
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
