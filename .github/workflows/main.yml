@@ -12,6 +12,7 @@ env:
   ECS_CLUSTER: nestify-ecs-cluster
   ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
   CONTAINER_NAME: tps-container
+  API_URL: http://nestify-dev-ecs-alb-395736660.us-west-2.elb.amazonaws.com
 
 jobs:
   deploy:
