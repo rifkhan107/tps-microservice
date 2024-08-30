@@ -13,11 +13,24 @@ env:
   ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
   CONTAINER_NAME: tps-container
   API_URL: http://nestify-dev-ecs-alb-187979857.us-west-2.elb.amazonaws.com
+
 jobs:
+  check_dependencies:
+    name: Check Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run NCU Analysis
+        id: ncu_check
+        uses: fzwael/ncu-action@v1
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: dev
+    needs: check_dependencies
 
     steps:
       - name: Checkout
