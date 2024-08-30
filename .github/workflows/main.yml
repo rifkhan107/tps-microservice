@@ -25,13 +25,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Specify the Node.js version you are using
+          node-version: '20'  # Specify the Node.js version you are using
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run NCU Analysis
-        run: npx npm-check-updates
+      - name: Run NCU Analysis and Generate Report
+        run: |
+          npx npm-check-updates > ncu-report.txt
+          npx npm-check-updates --errorLevel 2
+
+      - name: Upload NCU Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ncu-report
+          path: ncu-report.txt
 
   deploy:
     name: Deploy
