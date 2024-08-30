@@ -13,11 +13,31 @@ env:
   ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
   CONTAINER_NAME: tps-container
   API_URL: http://nestify-dev-ecs-alb-187979857.us-west-2.elb.amazonaws.com
+
 jobs:
+  check_dependencies:
+    name: Check Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Specify the Node.js version you are using
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run NCU Analysis
+        run: npx npm-check-updates
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: dev
+    needs: check_dependencies
 
     steps:
       - name: Checkout
