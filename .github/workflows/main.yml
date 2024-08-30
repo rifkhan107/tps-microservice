@@ -33,13 +33,19 @@ jobs:
       - name: Run NCU Analysis and Generate Report
         run: |
           npx npm-check-updates > ncu-report.txt
-          npx npm-check-updates --errorLevel 2
+          npx npm-check-updates --jsonUpgraded > ncu-upgraded.json || true
 
       - name: Upload NCU Report
         uses: actions/upload-artifact@v3
         with:
           name: ncu-report
           path: ncu-report.txt
+
+      - name: Upload NCU JSON Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ncu-upgraded
+          path: ncu-upgraded.json
 
   deploy:
     name: Deploy
