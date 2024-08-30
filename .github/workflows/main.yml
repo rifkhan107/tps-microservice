@@ -22,6 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+<<<<<<< HEAD
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -32,6 +33,11 @@ jobs:
 
       - name: Run NCU Analysis
         run: npx npm-check-updates
+=======
+      - name: Run NCU Analysis
+        id: ncu_check
+        uses: fzwael/ncu-action@v1
+>>>>>>> be54b9739a2422d7da42134b8c719ae7bf6bbe7c
 
   deploy:
     name: Deploy
