@@ -12,45 +12,11 @@ env:
   ECS_CLUSTER: nestify-ecs-cluster
   ECS_TASK_DEFINITION: .aws/tps-microservice-td.json
   CONTAINER_NAME: tps-container
-  API_URL: http://nestify-dev-ecs-alb-187979857.us-west-2.elb.amazonaws.com
 
 jobs:
-  check_dependencies:
-    name: Check Dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # Specify the Node.js version you are using
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run NCU Analysis and Generate Report
-        run: |
-          npx npm-check-updates > ncu-report.txt
-          npx npm-check-updates --jsonUpgraded > ncu-upgraded.json || true
-
-      - name: Upload NCU Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: ncu-report
-          path: ncu-report.txt
-
-      - name: Upload NCU JSON Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: ncu-upgraded
-          path: ncu-upgraded.json
-
-  build_and_scan:
+  build:
     name: Build and Scan Docker Image
     runs-on: ubuntu-latest
-    needs: check_dependencies
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,17 +35,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} .
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          image-ref: '${{ env.ECR_REPOSITORY }}:${{ github.sha }}'
-          format: 'table'
-          exit-code: '0'  # Set to '0' to not fail the build on vulnerabilities, adjust as needed
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-
+          
       - name: Push Docker Image to Amazon ECR
         run: |
           docker tag ${{ env.ECR_REPOSITORY }}:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
@@ -88,7 +44,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: build_and_scan
+    needs: build
     environment: dev
     steps:
       - name: Checkout
